@@ -1,0 +1,46 @@
+{
+  "name": "self-reminder-widget",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dist": "electron-builder --publish=never"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Daily productivity reminder widget",
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "marked": "^15.0.12"
+  },
+  "devDependencies": {
+    "electron": "^36.4.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.self-reminder-widget.app",
+    "productName": "Self-Reminder Widget",
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity"
+    },
+    "dmg": {
+      "title": "Self-Reminder Widget",
+      "icon": false
+    },
+    "files": [
+      "main.js",
+      "renderer.js",
+      "settings.js",
+      "index.html",
+      "style.css",
+      "node_modules/**/*"
+    ],
+    "publish": null
+  }
+}
