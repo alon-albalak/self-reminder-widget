@@ -297,11 +297,36 @@ body {
   margin-left: 4px;
 }
 
+.interval-dropdown {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 122, 255, 0.2);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: #3a3a3c;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  -webkit-app-region: no-drag;
+  margin-left: 6px;
+  min-width: 70px;
+}
+
 .refresh-button:hover,
 .folder-button:hover {
   opacity: 1;
   color: #007aff;
   background: rgba(0, 122, 255, 0.08);
+}
+
+.interval-dropdown:hover {
+  border-color: rgba(0, 122, 255, 0.4);
+  background: rgba(255, 255, 255, 1);
+}
+
+.interval-dropdown:focus {
+  border-color: #007aff;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
 }
 
 .refresh-button:hover {

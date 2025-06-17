@@ -86,6 +86,12 @@ function simpleMarkdown(text) {
     .replace(/^(.+)$/gim, '<p>$1</p>');
 }
 
+// Track the last displayed file across reloads (in-memory for session)
+let lastDisplayedFile = null;
+
+// Timer for automatic content rotation
+let contentTimer = null;
+
 async function loadContent(forceRandom = false) {
   const container = document.getElementById('markdown-container');
   const dateElement = document.getElementById('current-date');
@@ -132,19 +138,32 @@ async function loadContent(forceRandom = false) {
     }
     
     let index;
+    let attempts = 0;
+    const maxAttempts = files.length > 1 ? 10 : 1;
+
     if (forceRandom) {
-      // Pick truly random file
-      index = Math.floor(Math.random() * files.length);
+      // Pick truly random file, but avoid lastDisplayedFile if possible
+      do {
+        index = Math.floor(Math.random() * files.length);
+        attempts++;
+      } while (files.length > 1 && files[index] === lastDisplayedFile && attempts < maxAttempts);
       console.log('Using random index:', index);
     } else {
-      // Pick file based on date
+      // Pick file based on date, but avoid lastDisplayedFile if possible
       const seed = new Date().toISOString().split('T')[0];
       const hash = Array.from(seed).reduce((acc, char) => acc + char.charCodeAt(0), 0);
       index = hash % files.length;
+      // If only one file, just use it
+      if (files.length > 1 && files[index] === lastDisplayedFile) {
+        // Pick next file in list (wrap around)
+        index = (index + 1) % files.length;
+      }
       console.log('Using date-based index:', index);
     }
-    
+
     const filePath = path.join(markdownDir, files[index]);
+    lastDisplayedFile = files[index]; // Track for next load
+
     console.log('Reading file:', filePath);
     
     const content = fs.readFileSync(filePath, 'utf8');
@@ -196,10 +215,64 @@ async function selectFolder() {
   }
 }
 
+function startTimer() {
+  const intervalSelect = document.getElementById('interval-select');
+  if (!intervalSelect) return;
+  
+  const interval = parseInt(intervalSelect.value);
+  
+  // Clear existing timer
+  if (contentTimer) {
+    clearInterval(contentTimer);
+  }
+  
+  // Set new timer
+  contentTimer = setInterval(() => {
+    console.log('Timer triggered content refresh');
+    loadContent(true);
+  }, interval);
+  
+  console.log(`Timer set for ${interval / 1000} seconds`);
+}
+
+async function saveInterval() {
+  const intervalSelect = document.getElementById('interval-select');
+  if (!intervalSelect || !ipcRenderer) return;
+  
+  const interval = intervalSelect.value;
+  try {
+    await ipcRenderer.invoke('save-interval', interval);
+  } catch (error) {
+    console.error('Error saving interval:', error);
+  }
+}
+
+async function loadSavedInterval() {
+  const intervalSelect = document.getElementById('interval-select');
+  if (!intervalSelect || !ipcRenderer) return;
+  
+  try {
+    const savedInterval = await ipcRenderer.invoke('get-interval');
+    if (savedInterval) {
+      intervalSelect.value = savedInterval;
+    }
+  } catch (error) {
+    console.error('Error loading saved interval:', error);
+  }
+}
+
 // Initialize when DOM is ready
 setTimeout(async () => {
   console.log('Initializing content...');
+  
+  // Load saved interval first
+  await loadSavedInterval();
+  
+  // Load initial content
   await loadContent();
+  
+  // Start the timer
+  startTimer();
   
   // Add refresh button event listener
   const refreshBtn = document.getElementById('refresh-btn');
@@ -216,6 +289,16 @@ setTimeout(async () => {
     folderBtn.addEventListener('click', () => {
       console.log('Folder button clicked');
       selectFolder();
+    });
+  }
+  
+  // Add interval dropdown event listener
+  const intervalSelect = document.getElementById('interval-select');
+  if (intervalSelect) {
+    intervalSelect.addEventListener('change', () => {
+      console.log('Interval changed to:', intervalSelect.value);
+      saveInterval();
+      startTimer(); // Restart timer with new interval
     });
   }
 }, 100);

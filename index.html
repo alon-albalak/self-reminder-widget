@@ -21,6 +21,15 @@
         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
       </svg>
     </button>
+    <select class="interval-dropdown" id="interval-select" title="Select refresh interval">
+      <option value="60000">1 minute</option>
+      <option value="600000">10 minutes</option>
+      <option value="3600000" selected>1 hour</option>
+      <option value="7200000">2 hours</option>
+      <option value="14400000">4 hours</option>
+      <option value="43200000">12 hours</option>
+      <option value="86400000">Daily</option>
+    </select>
     <span class="widget-date" id="current-date"></span>
   </div>
   <div id="markdown-container">Loading...</div>

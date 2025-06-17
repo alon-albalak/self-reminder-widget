@@ -20,7 +20,8 @@ class Settings {
     
     // Default settings
     return {
-      markdownFolderPath: null
+      markdownFolderPath: null,
+      refreshInterval: '3600000' // Default to 1 hour
     };
   }
 
@@ -36,21 +37,21 @@ class Settings {
     }
   }
 
-  get(key) {
-    return this.settings[key];
-  }
-
-  set(key, value) {
-    this.settings[key] = value;
-    this.saveSettings();
-  }
-
   getMarkdownFolderPath() {
     return this.settings.markdownFolderPath;
   }
 
   setMarkdownFolderPath(folderPath) {
     this.settings.markdownFolderPath = folderPath;
+    this.saveSettings();
+  }
+
+  getRefreshInterval() {
+    return this.settings.refreshInterval || '3600000'; // Default to 1 hour
+  }
+
+  setRefreshInterval(interval) {
+    this.settings.refreshInterval = interval;
     this.saveSettings();
   }
 }

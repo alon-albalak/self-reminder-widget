@@ -82,3 +82,12 @@ ipcMain.handle('set-markdown-folder', (event, folderPath) => {
   settings.setMarkdownFolderPath(folderPath);
   return folderPath;
 });
+
+ipcMain.handle('save-interval', (event, interval) => {
+  settings.setRefreshInterval(interval);
+  return interval;
+});
+
+ipcMain.handle('get-interval', () => {
+  return settings.getRefreshInterval();
+});
