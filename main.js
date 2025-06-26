@@ -8,7 +8,7 @@ function createWindow () {
   
   const win = new BrowserWindow({
     width: 704,
-    height: 528,
+    height: 700,
     minWidth: 480,
     minHeight: 200,
     maxWidth: 1200,
@@ -18,6 +18,7 @@ function createWindow () {
     transparent: true,
     frame: false,
     movable: true,
+    center: false,
     resizable: true,
     minimizable: true,
     maximizable: false,
@@ -36,9 +37,6 @@ function createWindow () {
   });
 
   win.loadFile('index.html');
-  
-  // Ensure window is positioned at bottom left
-  win.setPosition(50, 420);
   
   // Hide from dock
   if (process.platform === 'darwin') {
