@@ -189,7 +189,7 @@ async function loadContent(forceRandom = false) {
     
     // Combine title, frontmatter and content
     const frontmatterHtml = renderFrontmatter(frontmatter);
-    container.innerHTML = titleHtml + frontmatterHtml + html;
+    container.innerHTML = titleHtml + frontmatterHtml + `<div class="markdown-body">${html}</div>`;
     console.log('Content rendered successfully');
     
   } catch (err) {

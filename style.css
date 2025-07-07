@@ -256,6 +256,11 @@ body {
   background: transparent;
 }
 
+.markdown-body {
+  white-space: pre-wrap;
+  font-family: inherit; /* or 'monospace' for code-like look */
+}
+
 /* Widget header */
 .widget-header {
   display: flex;
